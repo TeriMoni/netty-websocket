@@ -1,0 +1,49 @@
+<html>
+<meta http-equiv="Content-Type" content="text/xml;charset = utf-8"/>
+<title>webSocket客户端</title>
+<body>
+<form onsubmit="return false;" >
+<input type="text" value="" name="message"/>
+<input type="button" value="发送websocket请求消息" onClick="send(this.form.message.value)"/>
+</form>
+<hr color="red"/>
+<h2>客户端接收到服务端发送的应答消息</h2>
+<textarea id="responseContent" style="width:1024px;height:300px"></textarea>
+</body>
+<script type="text/javascript">
+var socket;
+if(!window.WebSocket){
+	window.WebSocket = window.MonzWebSocket;
+}
+
+if(window.WebSocket){
+socket = new WebSocket("ws://localhost:8888/webSocket");
+socket.onmessage =function(event){
+var ta =document.getElementById("responseContent");
+ta.value += event.data +"\r\n";
+}
+socket.onopen = function(event){
+var ta =document.getElementById("responseContent");
+ta.value ="您当前的浏览器支持webSocket,请进行后去操作\r\n";
+}
+socket.onclose =function(event){
+var ta =document.getElementById("responseContent");
+ta.value = "";
+ta.value ="webSocket连接关闭\r\n";
+};
+}else{
+alert("您的浏览器不支持websocket")
+}
+
+function send(message){
+if(!window.WebSocket){
+return;
+}
+if(socket.readyState == WebSocket.OPEN){
+socket.send(message);
+}else{
+alert("webSocket连接没有建立成功")
+}
+}
+</script
+</html>
